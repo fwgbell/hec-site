@@ -243,9 +243,6 @@ body.work { background: var(--paper); }
 body.info { background: var(--white); }
 
 .info__main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--gutter);
   max-width: 1100px;
   margin: 0 auto;
   padding: 17vh var(--gutter) 12vh;
@@ -260,18 +257,14 @@ body.info { background: var(--white); }
   margin-bottom: 14px;
 }
 .info__bio p { margin: 0 0 1.2em; }
-.info__links a,
-.info__rep a {
+.info__links a {
   color: var(--muted);
   text-decoration: underline;
   text-underline-offset: 2px;
   transition: color .2s;
 }
-.info__links a:hover,
-.info__rep a:hover { color: var(--ink); }
+.info__links a:hover { color: var(--ink); }
 .info__links { display: flex; flex-direction: column; }
-.info__rep { text-align: right; font-style: italic; }
-.info__rep p { margin: 0; }
 
 /* ============ PLAYER ============ */
 .player {
@@ -326,8 +319,7 @@ body.info { background: var(--white); }
   .project__meta { display: none; }
   .stills { display: none; }
 
-  .info__main { grid-template-columns: 1fr; padding-top: 110px; }
-  .info__rep { text-align: left; order: 2; }
+  .info__main { padding-top: 110px; }
 
   .player__meta { grid-template-columns: 1fr; gap: 6px; }
 }

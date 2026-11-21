@@ -129,7 +129,9 @@
   /* ---------- homepage ---------- */
 
   function initHome() {
-    const featured = PROJECTS.filter((p) => p.featured);
+    // Director first: featured directing work leads the slideshow; order is otherwise as listed.
+    const isDirecting = (p) => (p.roles || []).includes("directing");
+    const featured = PROJECTS.filter((p) => p.featured).sort((a, b) => isDirecting(b) - isDirecting(a));
     const slidesEl = document.querySelector(".hero__slides");
     const labelEl = document.querySelector(".hero__label");
     const countEl = document.querySelector(".hero__count");

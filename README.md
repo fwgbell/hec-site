@@ -7,7 +7,7 @@ public/              ← everything that gets deployed
   index.html         homepage: wordmark + full-screen slideshow of featured films
   directing.html     project list, stills on hover, click to play
   editing.html       same, for editing work
-  info.html          bio, links, representation
+  info.html          bio, portrait, links and contact
   js/projects.js     ← ALL PROJECTS LIVE HERE: edit this file to add or change work
   js/site.js         behaviour (slideshow, hover stills, video player)
   css/style.css      all styling
@@ -22,7 +22,7 @@ Open `public/js/projects.js` and copy one of the `{ ... }` blocks. The comment a
 - **YouTube:** `video: { platform: "youtube", id: "VIDEO_ID" }` (the part after `watch?v=`)
 - **Vimeo:** `video: { platform: "vimeo", id: "123456789" }`. For an **unlisted** Vimeo link like `vimeo.com/123456789/abc123def`, also add `hash: "abc123def"`.
 - `roles: ["directing"]`, `["editing"]` or both. This decides which page(s) it appears on.
-- `featured: true` puts it in the homepage slideshow.
+- `featured: true` puts it in the homepage slideshow. Directing work always comes first there.
 - `stills: ["assets/stills/name-1.jpg", ...]` sets the images shown on hover. YouTube projects use YouTube's own frame grabs if you leave this out. **Vimeo projects need stills added.**
 - `loop: "assets/loops/name.mp4"` (optional) is a short, silent clip that plays behind the homepage slide instead of a still. Keep it under about 10 MB (Cloudflare's hard limit is 25 MB per file). For example:
   `ffmpeg -i in.mov -t 12 -an -vf scale=1920:-2 -c:v libx264 -crf 28 -preset slow -movflags +faststart out.mp4`
@@ -55,5 +55,5 @@ Cloudflare serves `directing.html` at `/directing` automatically.
 
 - [ ] Projects in `js/projects.js` (currently Blender open-movie placeholders)
 - [ ] Wordmark scan
-- [ ] Bio, portrait (`assets/portrait.jpg`), Instagram/Vimeo links, contact email and rep details in `info.html`
+- [ ] Bio, portrait (`assets/portrait.jpg`), Instagram/Vimeo links and contact email in `info.html`
 - [ ] Page descriptions in each HTML `<head>`

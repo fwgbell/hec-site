@@ -16,6 +16,10 @@ Direction pinned by the client brief (`seed: none (pinned)`): the reference boar
 - `--gutter` clamp(16px, 2.2vw, 32px): every page edge and fixed element
 - `--ease` cubic-bezier(.7,0,.2,1): the logo dash
 
+## Content order
+- The homepage slideshow puts featured directing work first (PRODUCT.md: director first). Otherwise it keeps the `projects.js` order.
+- Info is a single column: portrait, bio, links. There's no representation block because Hector is contacted directly.
+
 ## Motion
 One authored moment per surface:
 - Home: 1.2s crossfade between slides, plus a slow 8s settle from 1.04 scale.

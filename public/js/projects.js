@@ -9,7 +9,7 @@
      year      optional
      location  optional (small text next to the hovered title)
      roles     ["directing"], ["editing"] or both — decides which page(s) it's on
-     featured  true = included in the homepage slideshow
+     featured  true = included in the homepage slideshow (directing work is shown first)
      video     { platform: "vimeo", id: "123456789", hash: "abc123" }   (hash only for unlisted Vimeo links: vimeo.com/123456789/abc123)
                { platform: "youtube", id: "dQw4w9WgXcQ" }               (the bit after watch?v= or youtu.be/)
      stills    optional list of image paths, e.g. ["assets/stills/night-swim-1.jpg", ...]
