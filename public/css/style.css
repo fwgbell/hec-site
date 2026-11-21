@@ -312,7 +312,7 @@ body.info { background: var(--white); }
   .topnav { gap: 16px; font-size: 12px; }
   .corner-logo { font-size: 18px; }
 
-  .wordmark { top: 18vh; font-size: 27vw; }
+  .wordmark { top: 18vh; font-size: 23vw; }
   .hero__label { top: auto; bottom: 64px; }
   .hero__watch { flex-direction: column; gap: 2px; }
   .hero__play { opacity: .8; transform: none; margin-top: 6px; }
