@@ -30,7 +30,8 @@ Everything collapses under `prefers-reduced-motion`.
 
 ## Components
 - Corner logo, fixed top-left on inner pages. Top nav, fixed top-right, with `aria-current` on the current page.
-- Lightbox player: 16:9 iframe, Esc and arrow keys, a `#slug` deep link per project.
+- **Lightbox player:** a 16:9 video capped at 880px, so it takes a section of the screen rather than all of it, with a 280–380px text column beside it. The column holds the title (22–30px, 500), a "type · client · year" line, the `about` paragraphs (60ch max), an Awards list under a hairline rule (text, or a laurel image at 52px tall), credits (one per line), then Previous/Next. The column scrolls on its own if it gets long. Empty sections are hidden. Below 900px it stacks, with the video on top and the whole overlay scrolling. Esc, the arrow keys and the `#slug` deep link all work.
+- **Project list meta (on hover):** type (semibold), then location and year, as 9px caps. On touch screens only the type shows, in `--muted`, beside each title.
 
 ## Small screens (≤760px)
 - No hover stills. Tapping a title plays it.

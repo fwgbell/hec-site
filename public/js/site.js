@@ -54,22 +54,47 @@
     el.hidden = true;
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-labelledby", "player-title");
     el.innerHTML = `
       <button class="player__close" type="button">Close</button>
       <div class="player__inner">
         <div class="player__frame"></div>
-        <div class="player__meta">
-          <div><span class="player__title"></span> <span class="player__client"></span></div>
-          <div class="player__credits"></div>
-          <div class="player__nav">
-            <button type="button" data-step="-1">Prev</button>
+        <article class="player__info">
+          <h2 class="player__title" id="player-title"></h2>
+          <p class="player__facts"></p>
+          <div class="player__about"></div>
+          <section class="player__awards" aria-labelledby="player-awards">
+            <h3 id="player-awards">Awards</h3>
+            <ul></ul>
+          </section>
+          <p class="player__credits"></p>
+          <nav class="player__nav" aria-label="More films">
+            <button type="button" data-step="-1">Previous</button>
             <button type="button" data-step="1">Next</button>
-          </div>
-        </div>
+          </nav>
+        </article>
       </div>`;
     document.body.appendChild(el);
 
     const frame = el.querySelector(".player__frame");
+    const info = el.querySelector(".player__info");
+    const q = (s) => el.querySelector(s);
+
+    function renderAwards(awards) {
+      const ul = q(".player__awards ul");
+      ul.innerHTML = "";
+      (awards || []).forEach((a) => {
+        const li = document.createElement("li");
+        li.className = "award" + (a.image ? " award--laurel" : "");
+        if (a.image) li.appendChild(img(a.image, a.name || "Award laurel"));
+        const text = document.createElement("div");
+        text.innerHTML = `<span class="award__name">${esc(a.name)}</span>
+          <span class="award__detail">${esc([a.detail, a.year].filter(Boolean).join(", "))}</span>`;
+        li.appendChild(text);
+        ul.appendChild(li);
+      });
+      q(".player__awards").hidden = !ul.children.length;
+    }
     let list = [];
     let index = -1;
     let lastFocus = null;
@@ -79,11 +104,24 @@
       const p = list[index];
       frame.innerHTML = `<iframe src="${esc(embedUrl(p.video))}" title="${esc(p.title)}"
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
-      el.querySelector(".player__title").textContent = p.title;
-      el.querySelector(".player__client").textContent = [p.client, p.year].filter(Boolean).join(", ");
-      el.querySelector(".player__credits").textContent = p.credits || "";
-      el.querySelector(".player__nav").hidden = list.length < 2;
-      el.setAttribute("aria-label", p.title);
+      q(".player__title").textContent = p.title;
+      q(".player__facts").textContent = [p.type, p.client, p.year].filter(Boolean).join(" · ");
+
+      const about = q(".player__about");
+      about.innerHTML = "";
+      [].concat(p.about || []).forEach((para) => {
+        const el2 = document.createElement("p");
+        el2.textContent = para;
+        about.appendChild(el2);
+      });
+      about.hidden = !about.children.length;
+
+      renderAwards(p.awards);
+      q(".player__credits").textContent = p.credits || "";
+      q(".player__credits").hidden = !p.credits;
+      q(".player__nav").hidden = list.length < 2;
+      info.scrollTop = 0;
+      el.scrollTop = 0;
       history.replaceState(null, "", "#" + p.slug);
     }
 
@@ -230,7 +268,13 @@
         (p, i) => `<li>
           <button type="button" class="project" data-i="${i}">
             <span class="project__title">${esc(p.title)}</span>
-            <span class="project__meta">${esc(p.location || "")}<br>${esc(p.year || "")}</span>
+            <span class="project__meta">${[
+              p.type && `<span class="project__type">${esc(p.type)}</span>`,
+              p.location && `<span>${esc(p.location)}</span>`,
+              p.year && `<span>${esc(p.year)}</span>`,
+            ]
+              .filter(Boolean)
+              .join("")}</span>
           </button>
         </li>`
       )

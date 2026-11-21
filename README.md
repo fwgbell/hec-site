@@ -22,6 +22,9 @@ Open `public/js/projects.js` and copy one of the `{ ... }` blocks. The comment a
 - **YouTube:** `video: { platform: "youtube", id: "VIDEO_ID" }` (the part after `watch?v=`)
 - **Vimeo:** `video: { platform: "vimeo", id: "123456789" }`. For an **unlisted** Vimeo link like `vimeo.com/123456789/abc123def`, also add `hash: "abc123def"`.
 - `roles: ["directing"]`, `["editing"]` or both. This decides which page(s) it appears on.
+- `type: "Commercial"` (or Narrative, Music Video, Documentary, and so on) is shown when you hover the title and in the player.
+- `about: ["Paragraph one.", "Paragraph two."]` holds a few short paragraphs shown beside the video.
+- `awards: [{ name: "Festival", detail: "Winner, Best Short", year: 2025 }]` adds an awards list under the text. Add `image: "assets/laurels/festival.png"` to show a laurel instead of text only. Leave `awards` out and the section disappears.
 - `featured: true` puts it in the homepage slideshow. Directing work always comes first there.
 - `stills: ["assets/stills/name-1.jpg", ...]` sets the images shown on hover. YouTube projects use YouTube's own frame grabs if you leave this out. **Vimeo projects need stills added.**
 - `loop: "assets/loops/name.mp4"` (optional) is a short, silent clip that plays behind the homepage slide instead of a still. Keep it under about 10 MB (Cloudflare's hard limit is 25 MB per file). For example:
