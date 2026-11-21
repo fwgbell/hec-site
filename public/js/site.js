@@ -242,6 +242,24 @@
       if (e.key === "ArrowRight") go(current + 1);
       if (e.key === "ArrowLeft") go(current - 1);
     });
+    // Touch: a horizontal swipe changes slide; vertical movement is left alone.
+    let touchX = null;
+    let touchY = null;
+    const hero = document.querySelector(".hero");
+    hero.addEventListener("touchstart", (e) => {
+      touchX = e.touches[0].clientX;
+      touchY = e.touches[0].clientY;
+    }, { passive: true });
+    hero.addEventListener("touchend", (e) => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      const dy = e.changedTouches[0].clientY - touchY;
+      touchX = touchY = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        e.preventDefault(); // stop the tap-zone click that would follow
+        go(current + (dx < 0 ? 1 : -1));
+      }
+    });
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) clearInterval(timer);
       else go(current);
@@ -267,6 +285,7 @@
       .map(
         (p, i) => `<li>
           <button type="button" class="project" data-i="${i}">
+            <span class="project__thumb" aria-hidden="true"></span>
             <span class="project__title">${esc(p.title)}</span>
             <span class="project__meta">${[
               p.type && `<span class="project__type">${esc(p.type)}</span>`,
@@ -291,6 +310,7 @@
       return cache.get(p.slug);
     }
 
+    const feed = matchMedia("(max-width: 760px)");
     let active = null;
     function activate(btn) {
       if (active === btn) return;
@@ -300,6 +320,7 @@
       stillsEl.querySelectorAll(".stills__set").forEach((n) => n.classList.remove("is-visible"));
       if (!btn) return;
       btn.classList.add("is-active");
+      if (feed.matches) return; // the feed shows its own still; skip the side panel
       const node = stillsNode(list[btn.dataset.i]);
       if (!node.isConnected) stillsEl.appendChild(node);
       requestAnimationFrame(() => node.classList.add("is-visible"));
@@ -308,15 +329,52 @@
     ul.addEventListener("pointerover", (e) => {
       if (e.pointerType === "mouse") activate(e.target.closest(".project"));
     });
-    ul.addEventListener("pointerleave", () => activate(null));
+    ul.addEventListener("pointerleave", (e) => {
+      if (e.pointerType === "mouse" && !feed.matches) activate(null);
+    });
     ul.addEventListener("focusin", (e) => activate(e.target.closest(".project")));
     ul.addEventListener("focusout", (e) => {
-      if (!ul.contains(e.relatedTarget)) activate(null);
+      if (!ul.contains(e.relatedTarget) && !feed.matches) activate(null);
     });
     ul.addEventListener("click", (e) => {
       const btn = e.target.closest(".project");
       if (btn) player.open(list[btn.dataset.i], list);
     });
+
+    /* Phones: the list becomes a feed of stills. Scrolling stands in for hover:
+       the project crossing the middle of the screen is "active", the rest recede. */
+    let observer = null;
+    function setupFeed() {
+      if (observer) observer.disconnect();
+      observer = null;
+      if (!feed.matches) {
+        activate(null);
+        return;
+      }
+      ul.querySelectorAll(".project").forEach((btn) => {
+        const thumb = btn.querySelector(".project__thumb");
+        if (!thumb.firstChild) {
+          const src = stillsFor(list[btn.dataset.i])[0];
+          if (src) {
+            const im = img(src, "");
+            im.loading = "lazy";
+            thumb.appendChild(im);
+          }
+        }
+      });
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) activate(en.target);
+          });
+        },
+        { rootMargin: "-45% 0px -45% 0px" }
+      );
+      ul.querySelectorAll(".project").forEach((btn) => observer.observe(btn));
+      activate(ul.querySelector(".project"));
+    }
+    setupFeed();
+    feed.addEventListener("change", setupFeed);
 
     openFromHash(list);
   }

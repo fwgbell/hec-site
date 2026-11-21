@@ -23,7 +23,7 @@ Direction pinned by the client brief (`seed: none (pinned)`): the reference boar
 ## Motion
 One authored moment per surface:
 - Home: 1.2s crossfade between slides, plus a slow 8s settle from 1.04 scale.
-- Lists: the color recede on hover, with stills fading in.
+- Lists: the color recede on hover, with stills fading in. On phones the same recede follows the scroll position.
 - Logo: the dash stretches from 0.42em to 1.9em.
 
 Everything collapses under `prefers-reduced-motion`.
@@ -31,8 +31,12 @@ Everything collapses under `prefers-reduced-motion`.
 ## Components
 - Corner logo, fixed top-left on inner pages. Top nav, fixed top-right, with `aria-current` on the current page.
 - **Lightbox player:** a 16:9 video capped at 880px, so it takes a section of the screen rather than all of it, with a 280–380px text column beside it. The column holds the title (22–30px, 500), a "type · client · year" line, the `about` paragraphs (60ch max), an Awards list under a hairline rule (text, or a laurel image at 52px tall), credits (one per line), then Previous/Next. The column scrolls on its own if it gets long. Empty sections are hidden. Below 900px it stacks, with the video on top and the whole overlay scrolling. Esc, the arrow keys and the `#slug` deep link all work.
-- **Project list meta (on hover):** type (semibold), then location and year, as 9px caps. On touch screens only the type shows, in `--muted`, beside each title.
+- **Project list meta (on hover):** type (semibold), then location and year, as 9px caps.
 
-## Small screens (≤760px)
-- No hover stills. Tapping a title plays it.
-- The wordmark scales to 27vw. The slide label moves above the bottom tabs.
+## Phones (≤760px)
+The same world as desktop (big tight type, recede-on-focus, film first), re-composed for a tall screen rather than scaled down. Everything respects safe areas (`viewport-fit=cover`), and every tap target is at least 44px.
+
+- **Home:** the wordmark stacks on two lines at 41vw, with "Hector" set left and "Bell" set right, filling the top third. A heavier bottom gradient carries the slide title, client and an underlined "Play film" link. The Directing / Editing / Info bar sits at 15px above the home indicator. A horizontal swipe changes slide.
+- **Directing / Editing:** a feed. Each project is a 4:5 still (its first still) with a 36px title and a "TYPE · LOCATION · YEAR" line underneath. **Scrolling stands in for hover:** the project crossing the middle of the screen is active, while the others' titles recede to #c4c4c4 and their stills drop to 55% opacity and greyscale. The header floats on a fade of the page ground.
+- **Info:** the portrait leads at 78% width (4:5), then 16px bio text, with the links pushed to the bottom within thumb reach.
+- **Player:** an opaque #0c0c0c backdrop (the feed must not show through), edge-to-edge video, and 15px text with a 30px title. Previous, Next and Close have 44px tap targets.

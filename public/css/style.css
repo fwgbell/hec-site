@@ -50,7 +50,7 @@ body { font-variant-numeric: tabular-nums; }
 /* ============ corner logo (every page except home) ============ */
 .corner-logo {
   position: fixed;
-  top: var(--gutter);
+  top: calc(var(--gutter) + env(safe-area-inset-top));
   left: var(--gutter);
   z-index: 20;
   display: inline-flex;
@@ -76,7 +76,7 @@ body { font-variant-numeric: tabular-nums; }
 /* ============ top nav (inner pages) ============ */
 .topnav {
   position: fixed;
-  top: var(--gutter);
+  top: calc(var(--gutter) + env(safe-area-inset-top));
   right: var(--gutter);
   z-index: 20;
   display: flex;
@@ -212,6 +212,7 @@ body.work { background: var(--paper); }
   transition: opacity 0.3s;
 }
 .project__type { font-weight: 600; margin-bottom: 0.25em; }
+.project__thumb { display: none; } /* phones only: see the feed below */
 .project.is-active .project__meta { opacity: 1; }
 .projects__empty { font-size: 32px; letter-spacing: -0.04em; }
 
@@ -341,36 +342,123 @@ body.info { background: var(--white); }
 .player__nav button:hover, .player__close:hover { color: #fff; }
 .player__close { position: absolute; top: var(--gutter); right: var(--gutter); font-size: 13px; }
 
-/* ============ small screens / touch ============ */
-@media (max-width: 760px) {
-  .topnav { gap: 16px; font-size: 12px; }
-  .corner-logo { font-size: 18px; }
-
-  .wordmark { top: 18vh; font-size: 23vw; }
-  .hero__label { top: auto; bottom: 64px; }
-  .hero__watch { flex-direction: column; gap: 2px; }
-  .hero__play { opacity: .8; transform: none; margin-top: 6px; }
-  .hero__bar { grid-template-columns: auto 1fr; }
-  .hero__bar > :last-child { display: none; }
-  .hero__tabs { gap: 24px; justify-content: flex-end; }
-
-  .work__main { grid-template-columns: 1fr; }
-  .projects { padding: 120px 0 60px; }
-  .project { font-size: 30px; }
-  /* no hover on touch: show just the type, quietly, beside each title */
-  .project__meta { opacity: 1; color: var(--muted); padding-bottom: 0.55em; }
-  .project__meta > :not(.project__type) { display: none; }
-  .stills { display: none; }
-
-  .info__main { padding-top: 110px; }
-
-}
-
-/* player stacks: video on top, story below, whole overlay scrolls */
+/* ============ tablets: player stacks ============ */
 @media (max-width: 900px) {
   .player { place-items: start center; overflow-y: auto; padding-top: 56px; }
   .player__inner { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .player__info { max-height: none; overflow: visible; padding: 0 0 var(--gutter); }
+}
+
+/* ============ phones ============
+   Same world as desktop (big tight type, recede-on-focus, film first) re-composed
+   for a tall screen: stacked wordmark, a feed of tall stills, thumb-height controls. */
+@media (max-width: 760px) {
+  body { font-size: 15px; }
+  body.work { --ground: var(--paper); }
+  body.info { --ground: var(--white); }
+
+  /* header floats on a fade of the page ground, so the feed scrolls under it cleanly */
+  body.work::before,
+  body.info::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 15;
+    height: calc(72px + env(safe-area-inset-top));
+    background: linear-gradient(var(--ground) 55%, transparent);
+    pointer-events: none;
+  }
+  .corner-logo { font-size: 19px; padding: 12px 0; margin: -12px 0; }
+  .topnav { gap: 18px; font-size: 13px; }
+  .topnav a { padding: 14px 0; margin: -14px 0; }
+
+  /* ---- home ---- */
+  .wordmark {
+    top: calc(7vh + env(safe-area-inset-top));
+    font-size: 41vw;
+    line-height: 0.78;
+    text-align: left;
+  }
+  .wordmark span { display: block; }
+  .wordmark span + span { text-align: right; }
+  .hero::after {
+    background: linear-gradient(180deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,0) 38%, rgba(0,0,0,0) 55%, rgba(0,0,0,.65) 100%);
+  }
+  .hero__label { top: auto; bottom: calc(86px + env(safe-area-inset-bottom)); right: var(--gutter); font-size: 17px; }
+  .hero__watch { flex-direction: column; gap: 2px; }
+  .hero__play {
+    opacity: 1;
+    transform: none;
+    margin-top: 10px;
+    padding: 10px 0;
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .hero__bar {
+    bottom: calc(var(--gutter) + env(safe-area-inset-bottom));
+    grid-template-columns: auto 1fr;
+    font-size: 15px;
+  }
+  .hero__bar > :last-child { display: none; }
+  .hero__tabs { gap: 26px; justify-content: flex-end; }
+  .hero__tabs a { padding: 14px 0; margin: -14px 0; }
+
+  /* ---- directing / editing: a feed of tall stills ---- */
+  .work__main { display: block; padding: 0 var(--gutter); }
+  .projects {
+    display: grid;
+    gap: 52px;
+    padding: calc(92px + env(safe-area-inset-top)) 0 calc(20vh + env(safe-area-inset-bottom));
+  }
+  .project { flex-direction: column; align-items: stretch; gap: 0; font-size: 36px; line-height: 1; }
+  .project__thumb {
+    display: block;
+    aspect-ratio: 4 / 5;
+    margin-bottom: 14px;
+    overflow: hidden;
+    background: #dcdcdc;
+  }
+  .project__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .projects.is-hovering .project:not(.is-active) .project__thumb img { opacity: 0.55; filter: grayscale(1); }
+  .project__meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 0.5em;
+    padding: 0.85em 0 0;
+    font-size: 10px;
+    opacity: 1;
+    color: var(--muted);
+  }
+  .project__meta > span + span::before { content: "·"; margin-right: 0.5em; }
+  .project__type { margin: 0; color: var(--ink); }
+  .projects.is-hovering .project:not(.is-active) .project__type { color: inherit; }
+  .stills { display: none; }
+
+  /* ---- info: portrait leads, links sit at thumb height ---- */
+  .info__main {
+    display: flex;
+    min-height: 100svh;
+    padding: calc(88px + env(safe-area-inset-top)) var(--gutter) calc(32px + env(safe-area-inset-bottom));
+  }
+  .info__bio { display: flex; flex-direction: column; max-width: none; font-size: 16px; line-height: 1.5; }
+  .info__portrait { width: 78%; aspect-ratio: 4 / 5; margin-bottom: 22px; }
+  .info__links { margin-top: auto; padding-top: 28px; font-size: 16px; }
+  .info__links a { padding: 9px 0; }
+
+  /* ---- player: full-bleed video, readable text ---- */
+  .player { padding: calc(56px + env(safe-area-inset-top)) 0 0; background: #0c0c0c; } /* opaque: the bright feed must not ghost through the text */
+  .player__close { top: calc(6px + env(safe-area-inset-top)); padding: 12px 0; font-size: 15px; }
+  .player__info { padding: 0 var(--gutter) calc(36px + env(safe-area-inset-bottom)); font-size: 15px; }
+  .player__title { font-size: 30px; }
+  .player__awards h3 { font-size: 15px; }
+  .player__nav { gap: 32px; font-size: 15px; }
+  .player__nav button { padding: 12px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
