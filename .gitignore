@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/config.local.json
+.claude/settings.local.json
+# impeccable's downloaded engine binary
+.claude/skills/impeccable/scripts/bin/
